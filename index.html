@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche en Épidémiologie Clinique | Clinical Epidemiology Research</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.4rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .card h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .language-toggle:hover {
+            background: #764ba2;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            margin: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+            margin: 1rem 0;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .tool {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            text-align: center;
+        }
+
+        .tool h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .english { display: none; }
+        .french { display: block; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="language-toggle" onclick="toggleLanguage()">EN/FR</button>
+
+    <!-- French Content -->
+    <div class="french">
+        <header>
+            <div class="container">
+                <h1>🔬 Recherche en Épidémiologie Clinique</h1>
+                <p>Guide méthodologique complet pour la recherche clinique et épidémiologique</p>
+            </div>
+        </header>
+
+        <div class="container">
+            <section class="section">
+                <h2>📋 Vue d'ensemble</h2>
+                <p>Ce guide méthodologique fournit une approche structurée pour la conduite de recherches en épidémiologie clinique, depuis la formulation des questions jusqu'à la publication des résultats.</p>
+            </section>
+
+            <section class="section">
+                <h2>🎯 Étapes Méthodologiques</h2>
+                <div class="steps">
+                    <div class="step">
+                        <h3>1. Formulation de la Question de Recherche</h3>
+                        <p>Définir clairement l'objectif en utilisant le cadre PICO (Population, Intervention, Comparaison, Outcome).</p>
+                        <div class="highlight">
+                            <strong>Exemple :</strong> Chez les patients diabétiques de type 2 (P), l'insuline basale (I) comparée aux antidiabétiques oraux (C) améliore-t-elle le contrôle glycémique (O) ?
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>2. Conception de l'Étude</h3>
+                        <p>Sélectionner le type d'étude approprié selon l'objectif et les ressources disponibles.</p>
+                        <div class="grid">
+                            <div class="card">
+                                <h4>Études Observationnelles</h4>
+                                <ul>
+                                    <li>Études de cohorte</li>
+                                    <li>Études cas-témoins</li>
+                                    <li>Études transversales</li>
+                                </ul>
+                            </div>
+                            <div class="card">
+                                <h4>Études Expérimentales</h4>
+                                <ul>
+                                    <li>Essais randomisés contrôlés</li>
+                                    <li>Essais cliniques contrôlés</li>
+                                    <li>Études pilotes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>3. Collecte des Données</h3>
+                        <p>Mettre en place des protocoles rigoureux de collecte et de gestion des données.</p>
+                        <div class="card">
+                            <h4>Outils Recommandés</h4>
+                            <ul>
+                                <li>REDCap pour la collecte électronique</li>
+                                <li>OpenClinica pour les essais cliniques</li>
+                                <li>Tableaux Excel structurés pour les petites études</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>4. Analyse Statistique</h3>
+                        <p>Appliquer les méthodes statistiques appropriées selon le type de données et d'objectifs.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>🛠️ Outils d'Analyse Statistique</h2>
+                <div class="tools-grid">
+                    <div class="tool">
+                        <h4>R</h4>
+                        <p>Logiciel libre et puissant pour l'analyse statistique et la visualisation.</p>
+                        <div class="code-block">
+install.packages(c("tidyverse", "survival", "epitools"))<br>
+library(tidyverse)
+                        </div>
+                    </div>
+                    <div class="tool">
+                        <h4>Python</h4>
+                        <p>Langage polyvalent avec d'excellentes librairies statistiques.</p>
+                        <div class="code-block">
+import pandas as pd<br>
+import numpy as np<br>
+from scipy import stats
+                        </div>
+                    </div>
+                    <div class="tool">
+                        <h4>SAS</h4>
+                        <p>Logiciel de référence en recherche clinique pharmaceutique.</p>
+                        <div class="code-block">
+PROC LOGISTIC DATA=dataset;<br>
+MODEL outcome = predictor1 predictor2;<br>
+RUN;
+                        </div>
+                    </div>
+                    <div class="tool">
+                        <h4>SPSS</h4>
+                        <p>Interface graphique conviviale pour les analyses statistiques.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📊 Méthodes d'Analyse</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Analyse Descriptive</h3>
+                        <ul>
+                            <li>Moyenne, médiane, écart-type</li>
+                            <li>Fréquences et pourcentages</li>
+                            <li>Graphiques de distribution</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Analyse Bivariée</h3>
+                        <ul>
+                            <li>Tests t, ANOVA</li>
+                            <li>Chi-carré, corrélations</li>
+                            <li>Régressions simples</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Analyse Multivariée</h3>
+                        <ul>
+                            <li>Régression logistique</li>
+                            <li>Modèles de Cox</li>
+                            <li>Analyse factorielle</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📈 Présentation des Résultats</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Rapport Scientifique</h3>
+                        <ol>
+                            <li>Introduction et contexte</li>
+                            <li>Description des méthodes</li>
+                            <li>Présentation des résultats</li>
+                            <li>Discussion et implications</li>
+                        </ol>
+                    </div>
+                    <div class="card">
+                        <h3>Visualisations</h3>
+                        <ul>
+                            <li>Graphiques en barres</li>
+                            <li>Boxplots et histogrammes</li>
+                            <li>Courbes ROC et Kaplan-Meier</li>
+                            <li>Diagrammes forest</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📚 Ressources Supplémentaires</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Formation</h4>
+                        <ul>
+                            <li>Coursera : Épidémiologie</li>
+                            <li>edX : Biostatistiques</li>
+                            <li>YouTube : Canal Stata</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Références</h4>
+                        <ul>
+                            <li>STROBE Statement</li>
+                            <li>CONSORT Guidelines</li>
+                            <li>Guide PRISMA</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <div class="container">
+                <p>&copy; 2024 Recherche en Épidémiologie Clinique | <a href="https://github.com/Dr-Aissa/clinical_Epidemiology_research">Voir sur GitHub</a></p>
+                <p>Guide méthodologique pour les professionnels de santé et chercheurs</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- English Content -->
+    <div class="english">
+        <header>
+            <div class="container">
+                <h1>🔬 Clinical Epidemiology Research</h1>
+                <p>Complete methodological guide for clinical and epidemiological research</p>
+            </div>
+        </header>
+
+        <div class="container">
+            <section class="section">
+                <h2>📋 Overview</h2>
+                <p>This methodological guide provides a structured approach for conducting clinical epidemiology research, from question formulation to results publication.</p>
+            </section>
+
+            <section class="section">
+                <h2>🎯 Methodological Steps</h2>
+                <div class="steps">
+                    <div class="step">
+                        <h3>1. Research Question Formulation</h3>
+                        <p>Clearly define the objective using the PICO framework (Population, Intervention, Comparison, Outcome).</p>
+                        <div class="highlight">
+                            <strong>Example:</strong> In type 2 diabetic patients (P), does basal insulin (I) compared to oral antidiabetics (C) improve glycemic control (O)?
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>2. Study Design</h3>
+                        <p>Select the appropriate study type according to the objective and available resources.</p>
+                        <div class="grid">
+                            <div class="card">
+                                <h4>Observational Studies</h4>
+                                <ul>
+                                    <li>Cohort studies</li>
+                                    <li>Case-control studies</li>
+                                    <li>Cross-sectional studies</li>
+                                </ul>
+                            </div>
+                            <div class="card">
+                                <h4>Experimental Studies</h4>
+                                <ul>
+                                    <li>Randomized controlled trials</li>
+                                    <li>Controlled clinical trials</li>
+                                    <li>Pilot studies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>3. Data Collection</h3>
+                        <p>Establish rigorous protocols for data collection and management.</p>
+                        <div class="card">
+                            <h4>Recommended Tools</h4>
+                            <ul>
+                                <li>REDCap for electronic collection</li>
+                                <li>OpenClinica for clinical trials</li>
+                                <li>Structured Excel spreadsheets for small studies</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <h3>4. Statistical Analysis</h3>
+                        <p>Apply appropriate statistical methods according to data type and objectives.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>🛠️ Statistical Analysis Tools</h2>
+                <div class="tools-grid">
+                    <div class="tool">
+                        <h4>R</h4>
+                        <p>Free and powerful software for statistical analysis and visualization.</p>
+                        <div class="code-block">
+install.packages(c("tidyverse", "survival", "epitools"))<br>
+library(tidyverse)
+                        </div>
+                    </div>
+                    <div class="tool">
+                        <h4>Python</h4>
+                        <p>Versatile language with excellent statistical libraries.</p>
+                        <div class="code-block">
+import pandas as pd<br>
+import numpy as np<br>
+from scipy import stats
+                        </div>
+                    </div>
+                    <div class="tool">
+                        <h4>SAS</h4>
+                        <p>Reference software in pharmaceutical clinical research.</p>
+                        <div class="code-block">
+PROC LOGISTIC DATA=dataset;<br>
+MODEL outcome = predictor1 predictor2;<br>
+RUN;
+                        </div>
+                    </div>
+                    <div class="tool">
+                        <h4>SPSS</h4>
+                        <p>User-friendly graphical interface for statistical analyses.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📊 Analysis Methods</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Descriptive Analysis</h3>
+                        <ul>
+                            <li>Mean, median, standard deviation</li>
+                            <li>Frequencies and percentages</li>
+                            <li>Distribution plots</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Bivariate Analysis</h3>
+                        <ul>
+                            <li>t-tests, ANOVA</li>
+                            <li>Chi-square, correlations</li>
+                            <li>Simple regressions</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Multivariate Analysis</h3>
+                        <ul>
+                            <li>Logistic regression</li>
+                            <li>Cox models</li>
+                            <li>Factor analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📈 Results Presentation</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Scientific Report</h3>
+                        <ol>
+                            <li>Introduction and context</li>
+                            <li>Methods description</li>
+                            <li>Results presentation</li>
+                            <li>Discussion and implications</li>
+                        </ol>
+                    </div>
+                    <div class="card">
+                        <h3>Visualizations</h3>
+                        <ul>
+                            <li>Bar charts</li>
+                            <li>Boxplots and histograms</li>
+                            <li>ROC curves and Kaplan-Meier</li>
+                            <li>Forest plots</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📚 Additional Resources</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Training</h4>
+                        <ul>
+                            <li>Coursera: Epidemiology</li>
+                            <li>edX: Biostatistics</li>
+                            <li>YouTube: Stata Channel</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>References</h4>
+                        <ul>
+                            <li>STROBE Statement</li>
+                            <li>CONSORT Guidelines</li>
+                            <li>PRISMA Guide</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <div class="container">
+                <p>&copy; 2024 Clinical Epidemiology Research | <a href="https://github.com/Dr-Aissa/clinical_Epidemiology_research">View on GitHub</a></p>
+                <p>Methodological guide for healthcare professionals and researchers</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            const french = document.querySelector('.french');
+            const english = document.querySelector('.english');
+
+            if (french.style.display === 'none') {
+                french.style.display = 'block';
+                english.style.display = 'none';
+            } else {
+                french.style.display = 'none';
+                english.style.display = 'block';
+            }
+        }
+
+        // Check for language preference in localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const language = localStorage.getItem('language');
+            if (language === 'english') {
+                toggleLanguage();
+            }
+        });
+
+        // Save language preference
+        document.querySelector('.language-toggle').addEventListener('click', function() {
+            const french = document.querySelector('.french');
+            const language = french.style.display === 'none' ? 'english' : 'french';
+            localStorage.setItem('language', language);
+        });
+    </script>
+</body>
+</html>
