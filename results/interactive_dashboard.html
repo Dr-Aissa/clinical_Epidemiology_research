@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Interactif - Épidémiologie Clinique</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .filters {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: inline-block;
+            margin: 0.5rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: bold;
+        }
+
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>📊 Tableau de Bord Interactif</h1>
+            <p>Analyse épidémiologique clinique - Données d'exemple</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Statistiques générales -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-patients">200</div>
+                <div class="stat-label">Patients totaux</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-age">61.2</div>
+                <div class="stat-label">Âge moyen (ans)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="diabetes-rate">25%</div>
+                <div class="stat-label">Prévalence diabète</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="cv-events">23.5%</div>
+                <div class="stat-label">Événements CV</div>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="filters">
+            <h3>🔍 Filtres</h3>
+            <div class="filter-group">
+                <label for="sex-filter">Sexe:</label>
+                <select id="sex-filter">
+                    <option value="all">Tous</option>
+                    <option value="Homme">Homme</option>
+                    <option value="Femme">Femme</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="diabetes-filter">Diabète:</label>
+                <select id="diabetes-filter">
+                    <option value="all">Tous</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="age-range">Tranche d'âge:</label>
+                <select id="age-range">
+                    <option value="all">Toutes</option>
+                    <option value="18-50">18-50 ans</option>
+                    <option value="51-65">51-65 ans</option>
+                    <option value="66+">66+ ans</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="dashboard-grid">
+            <div class="chart-card">
+                <h3>Distribution de l'âge</h3>
+                <div id="age-histogram"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3>IMC par sexe</h3>
+                <div id="bmi-by-sex"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3>HbA1c par groupe de traitement</h3>
+                <div id="hba1c-by-treatment"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Corrélation âge vs IMC</h3>
+                <div id="age-bmi-scatter"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Prévalence des comorbidités</h3>
+                <div id="comorbidities-bar"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Évolution HbA1c selon événements CV</h3>
+                <div id="hba1c-by-cv"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Recherche en Épidémiologie Clinique</p>
+            <p><a href="../index.html">← Retour au guide principal</a> | <a href="https://github.com/Dr-Aissa/clinical_Epidemiology_research">Voir sur GitHub</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Données d'exemple (simulées pour la démonstration)
+        const clinicalData = [
+            {id: 1, age: 65, sexe: "Femme", poids: 68.5, taille: 162, imc: 26.1, diabete: "Oui", hypertension: "Non", fumeur: "Oui", groupe_traitement: "Traitement_A", hba1c: 7.8, cholesterol_total: 210, creatininemie: 78, suivi_mois: 18, evenement_cv: "Non"},
+            {id: 2, age: 52, sexe: "Homme", poids: 85.2, taille: 175, imc: 27.8, diabete: "Non", hypertension: "Oui", fumeur: "Ancien", groupe_traitement: "Traitement_B", hba1c: 5.6, cholesterol_total: 185, creatininemie: 92, suivi_mois: 22, evenement_cv: "Non"},
+            {id: 3, age: 71, sexe: "Femme", poids: 72.1, taille: 158, imc: 28.9, diabete: "Oui", hypertension: "Oui", fumeur: "Non", groupe_traitement: "Placebo", hba1c: 8.2, cholesterol_total: 240, creatininemie: 85, suivi_mois: 15, evenement_cv: "Oui"},
+            {id: 4, age: 48, sexe: "Homme", poids: 79.8, taille: 178, imc: 25.2, diabete: "Non", hypertension: "Non", fumeur: "Oui", groupe_traitement: "Traitement_A", hba1c: 5.9, cholesterol_total: 195, creatininemie: 88, suivi_mois: 24, evenement_cv: "Non"},
+            {id: 5, age: 59, sexe: "Femme", poids: 64.7, taille: 165, imc: 23.8, diabete: "Non", hypertension: "Oui", fumeur: "Non", groupe_traitement: "Traitement_B", hba1c: 6.1, cholesterol_total: 220, creatininemie: 72, suivi_mois: 20, evenement_cv: "Non"},
+            {id: 6, age: 67, sexe: "Homme", poids: 91.3, taille: 180, imc: 28.1, diabete: "Oui", hypertension: "Oui", fumeur: "Oui", groupe_traitement: "Placebo", hba1c: 8.9, cholesterol_total: 260, creatininemie: 95, suivi_mois: 12, evenement_cv: "Oui"},
+            {id: 7, age: 45, sexe: "Femme", poids: 58.9, taille: 168, imc: 20.9, diabete: "Non", hypertension: "Non", fumeur: "Non", groupe_traitement: "Traitement_A", hba1c: 5.2, cholesterol_total: 175, creatininemie: 68, suivi_mois: 23, evenement_cv: "Non"},
+            {id: 8, age: 73, sexe: "Homme", poids: 77.4, taille: 172, imc: 26.1, diabete: "Oui", hypertension: "Oui", fumeur: "Ancien", groupe_traitement: "Traitement_B", hba1c: 7.5, cholesterol_total: 235, creatininemie: 89, suivi_mois: 16, evenement_cv: "Oui"},
+            {id: 9, age: 54, sexe: "Femme", poids: 69.2, taille: 164, imc: 25.7, diabete: "Oui", hypertension: "Non", fumeur: "Oui", groupe_traitement: "Placebo", hba1c: 8.1, cholesterol_total: 215, creatininemie: 74, suivi_mois: 19, evenement_cv: "Non"},
+            {id: 10, age: 61, sexe: "Homme", poids: 83.6, taille: 176, imc: 27.0, diabete: "Non", hypertension: "Oui", fumeur: "Non", groupe_traitement: "Traitement_A", hba1c: 6.3, cholesterol_total: 200, creatininemie: 91, suivi_mois: 21, evenement_cv: "Non"}
+            // Ajoutez plus de données selon vos besoins
+        ];
+
+        // Fonction pour filtrer les données
+        function filterData(data, filters) {
+            return data.filter(item => {
+                if (filters.sex !== 'all' && item.sexe !== filters.sex) return false;
+                if (filters.diabetes !== 'all' && item.diabete !== filters.diabetes) return false;
+
+                if (filters.ageRange !== 'all') {
+                    if (filters.ageRange === '18-50' && (item.age < 18 || item.age > 50)) return false;
+                    if (filters.ageRange === '51-65' && (item.age < 51 || item.age > 65)) return false;
+                    if (filters.ageRange === '66+' && item.age < 66) return false;
+                }
+
+                return true;
+            });
+        }
+
+        // Créer les graphiques
+        function createCharts(data) {
+            // 1. Histogramme de l'âge
+            const ageData = data.map(d => d.age);
+            const ageTrace = {
+                x: ageData,
+                type: 'histogram',
+                nbinsx: 20,
+                marker: {color: '#667eea'},
+                name: 'Âge'
+            };
+
+            Plotly.newPlot('age-histogram', [ageTrace], {
+                title: '',
+                xaxis: {title: 'Âge (années)'},
+                yaxis: {title: 'Fréquence'}
+            });
+
+            // 2. IMC par sexe (boxplot)
+            const hommes = data.filter(d => d.sexe === 'Homme').map(d => d.imc);
+            const femmes = data.filter(d => d.sexe === 'Femme').map(d => d.imc);
+
+            const bmiTrace = [{
+                y: hommes,
+                type: 'box',
+                name: 'Hommes',
+                marker: {color: '#667eea'}
+            }, {
+                y: femmes,
+                type: 'box',
+                name: 'Femmes',
+                marker: {color: '#764ba2'}
+            }];
+
+            Plotly.newPlot('bmi-by-sex', bmiTrace, {
+                title: '',
+                yaxis: {title: 'IMC (kg/m²)'}
+            });
+
+            // 3. HbA1c par groupe de traitement
+            const groups = ['Traitement_A', 'Traitement_B', 'Placebo'];
+            const hba1cByGroup = groups.map(group => {
+                return {
+                    y: data.filter(d => d.groupe_traitement === group).map(d => d.hba1c),
+                    type: 'box',
+                    name: group
+                };
+            });
+
+            Plotly.newPlot('hba1c-by-treatment', hba1cByGroup, {
+                title: '',
+                yaxis: {title: 'HbA1c (%)'}
+            });
+
+            // 4. Scatter plot âge vs IMC
+            const scatterTrace = {
+                x: data.map(d => d.age),
+                y: data.map(d => d.imc),
+                mode: 'markers',
+                type: 'scatter',
+                marker: {
+                    color: data.map(d => d.sexe === 'Homme' ? '#667eea' : '#764ba2'),
+                    size: 8
+                },
+                text: data.map(d => `Sexe: ${d.sexe}<br>Diabète: ${d.diabete}`),
+                hovertemplate: 'Âge: %{x}<br>IMC: %{y}<extra></extra>'
+            };
+
+            Plotly.newPlot('age-bmi-scatter', [scatterTrace], {
+                title: '',
+                xaxis: {title: 'Âge (années)'},
+                yaxis: {title: 'IMC (kg/m²)'}
+            });
+
+            // 5. Prévalence des comorbidités
+            const diabeteCount = data.filter(d => d.diabete === 'Oui').length;
+            const hyperCount = data.filter(d => d.hypertension === 'Oui').length;
+            const fumeurCount = data.filter(d => d.fumeur === 'Oui').length;
+
+            const comorbiditiesTrace = {
+                x: ['Diabète', 'Hypertension', 'Tabagisme'],
+                y: [diabeteCount, hyperCount, fumeurCount],
+                type: 'bar',
+                marker: {color: '#667eea'},
+                text: [`${((diabeteCount/data.length)*100).toFixed(1)}%`,
+                       `${((hyperCount/data.length)*100).toFixed(1)}%`,
+                       `${((fumeurCount/data.length)*100).toFixed(1)}%`],
+                textposition: 'auto'
+            };
+
+            Plotly.newPlot('comorbidities-bar', [comorbiditiesTrace], {
+                title: '',
+                yaxis: {title: 'Nombre de patients'}
+            });
+
+            // 6. HbA1c selon événements CV
+            const cvOui = data.filter(d => d.evenement_cv === 'Oui').map(d => d.hba1c);
+            const cvNon = data.filter(d => d.evenement_cv === 'Non').map(d => d.hba1c);
+
+            const cvTrace = [{
+                y: cvNon,
+                type: 'box',
+                name: 'Sans événement CV',
+                marker: {color: '#28a745'}
+            }, {
+                y: cvOui,
+                type: 'box',
+                name: 'Avec événement CV',
+                marker: {color: '#dc3545'}
+            }];
+
+            Plotly.newPlot('hba1c-by-cv', cvTrace, {
+                title: '',
+                yaxis: {title: 'HbA1c (%)'}
+            });
+        }
+
+        // Fonction pour mettre à jour les statistiques
+        function updateStats(data) {
+            document.getElementById('total-patients').textContent = data.length;
+            const avgAge = (data.reduce((sum, d) => sum + d.age, 0) / data.length).toFixed(1);
+            document.getElementById('avg-age').textContent = avgAge;
+
+            const diabeteRate = ((data.filter(d => d.diabete === 'Oui').length / data.length) * 100).toFixed(1);
+            document.getElementById('diabetes-rate').textContent = diabeteRate + '%';
+
+            const cvRate = ((data.filter(d => d.evenement_cv === 'Oui').length / data.length) * 100).toFixed(1);
+            document.getElementById('cv-events').textContent = cvRate + '%';
+        }
+
+        // Gestionnaire d'événements pour les filtres
+        document.getElementById('sex-filter').addEventListener('change', updateDashboard);
+        document.getElementById('diabetes-filter').addEventListener('change', updateDashboard);
+        document.getElementById('age-range').addEventListener('change', updateDashboard);
+
+        function updateDashboard() {
+            const filters = {
+                sex: document.getElementById('sex-filter').value,
+                diabetes: document.getElementById('diabetes-filter').value,
+                ageRange: document.getElementById('age-range').value
+            };
+
+            const filteredData = filterData(clinicalData, filters);
+            updateStats(filteredData);
+            createCharts(filteredData);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            createCharts(clinicalData);
+            updateStats(clinicalData);
+        });
+    </script>
+</body>
+</html>

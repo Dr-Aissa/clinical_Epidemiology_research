@@ -1,0 +1,331 @@
+---
+title: "Rapport d'Analyse Statistique"
+subtitle: "Épidémiologie Clinique"
+author: "[Votre nom]"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    highlight: tango
+    code_folding: hide
+  pdf_document:
+    toc: true
+    latex_engine: xelatex
+    number_sections: true
+header-includes:
+  - \usepackage[french]{babel}
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+---
+
+```{r setup, include=FALSE}
+# Configuration R
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 6,
+  out.width = "80%"
+)
+
+# Packages nécessaires
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+library(gridExtra)
+library(survival)
+library(epitools)
+
+# Configuration graphique
+theme_set(theme_minimal(base_size = 12) +
+          theme(plot.title = element_text(hjust = 0.5, face = "bold")))
+```
+
+---
+
+# Résumé Exécutif
+
+## Objectif de l'étude
+[Décrire brièvement l'objectif principal de l'étude]
+
+## Principaux résultats
+[Liste des 3-5 résultats les plus importants]
+
+## Conclusions
+[Conclusions principales en 2-3 phrases]
+
+---
+
+# Introduction
+
+## Contexte
+[Description du problème de santé et justification de l'étude]
+
+## Objectifs
+### Objectif principal
+[Question de recherche principale (PICO)]
+
+### Objectifs secondaires
+1. [Objectif 1]
+2. [Objectif 2]
+3. [Objectif 3]
+
+---
+
+# Méthodes
+
+## Type d'étude
+[Description du design de l'étude]
+
+## Population d'étude
+- **Critères d'inclusion:** [Liste]
+- **Critères d'exclusion:** [Liste]
+- **Taille d'échantillon:** [n] participants
+
+## Variables d'étude
+### Variable dépendante (Outcome)
+- **Nom:** [Nom]
+- **Définition:** [Définition opérationnelle]
+
+### Variables indépendantes (Expositions)
+- **Variable 1:** [Nom et définition]
+- **Variable 2:** [Nom et définition]
+- **Variable 3:** [Nom et définition]
+
+## Analyses statistiques
+### Analyse descriptive
+- Variables quantitatives: statistiques de tendance centrale et dispersion
+- Variables qualitatives: fréquences et pourcentages
+
+### Analyse bivariée
+- Tests de comparaison: t-test, ANOVA, Mann-Whitney
+- Tests d'association: Chi-carré, corrélations
+
+### Analyse multivariée
+- [Méthodes utilisées: régression logistique, modèles de Cox, etc.]
+
+---
+
+# Résultats
+
+```{r load-data, include=FALSE}
+# Charger les données
+# data <- read.csv("data/processed/processed_data.csv")
+# ou charger depuis un objet R sauvegardé
+# load("results/outputs/analysis_results.RData")
+```
+
+## Caractéristiques de la population
+
+### Statistiques descriptives générales
+```{r desc-table}
+# Exemple de tableau descriptif
+# desc_table <- data %>%
+#   summarise(
+#     Age_moy = mean(age, na.rm = TRUE),
+#     Age_sd = sd(age, na.rm = TRUE),
+#     Femmes_pct = mean(sexe == "Femme", na.rm = TRUE) * 100,
+#     Diabete_pct = mean(diabete == "Oui", na.rm = TRUE) * 100
+#   ) %>%
+#   round(1)
+
+# kable(desc_table, col.names = c("Âge moyen", "Écart-type âge", "% Femmes", "% Diabète")) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### Distribution par groupe d'intervention
+```{r group-desc}
+# Tableau par groupe
+# group_table <- data %>%
+#   group_by(groupe_traitement) %>%
+#   summarise(
+#     n = n(),
+#     age_moy = round(mean(age, na.rm = TRUE), 1),
+#     imc_moy = round(mean(imc, na.rm = TRUE), 1),
+#     hba1c_moy = round(mean(hemoglobine_a1c, na.rm = TRUE), 1)
+#   )
+
+# kable(group_table,
+#       col.names = c("Groupe", "n", "Âge moyen", "IMC moyen", "HbA1c moyen")) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Analyses bivariées
+
+### Comparaisons selon les groupes
+```{r bivariate-tests}
+# Exemple de tests bivariés
+# ttest_age <- t.test(age ~ groupe_traitement, data = data)
+# ttest_imc <- t.test(imc ~ groupe_traitement, data = data)
+#
+# bivariate_results <- data.frame(
+#   Variable = c("Âge", "IMC", "HbA1c"),
+#   Difference = c(round(ttest_age$estimate[1] - ttest_age$estimate[2], 2),
+#                  round(ttest_imc$estimate[1] - ttest_imc$estimate[2], 2),
+#                  round(ttest_hba1c$estimate[1] - ttest_hba1c$estimate[2], 2)),
+#   IC_95 = c(paste0("[", round(ttest_age$conf.int[1], 2), "; ", round(ttest_age$conf.int[2], 2), "]"),
+#             paste0("[", round(ttest_imc$conf.int[1], 2), "; ", round(ttest_imc$conf.int[2], 2), "]"),
+#             paste0("[", round(ttest_hba1c$conf.int[1], 2), "; ", round(ttest_hba1c$conf.int[2], 2), "]")),
+#   p_value = c(format.pval(ttest_age$p.value, digits = 3),
+#               format.pval(ttest_imc$p.value, digits = 3),
+#               format.pval(ttest_hba1c$p.value, digits = 3))
+# )
+#
+# kable(bivariate_results, col.names = c("Variable", "Différence", "IC 95%", "p-value")) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+### Associations entre variables
+```{r associations}
+# Tableau d'association diabète-hypertension
+# contingency_table <- table(data$diabete, data$hypertension)
+# chisq_result <- chisq.test(contingency_table)
+#
+# assoc_results <- data.frame(
+#   Association = "Diabète × Hypertension",
+#   Chi2 = round(chisq_result$statistic, 2),
+#   ddl = chisq_result$parameter,
+#   p_value = format.pval(chisq_result$p.value, digits = 3)
+# )
+#
+# kable(assoc_results, col.names = c("Association", "χ²", "ddl", "p-value")) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Analyses multivariées
+
+### Modèle principal
+```{r multivariate-model}
+# Exemple de modèle de régression
+# model <- glm(outcome ~ age + sexe + traitement + imc,
+#              data = data, family = binomial)
+# summary_table <- as.data.frame(summary(model)$coefficients)
+# summary_table$OR <- exp(summary_table$Estimate)
+# summary_table$OR_lower <- exp(summary_table$Estimate - 1.96*summary_table$`Std. Error`)
+# summary_table$OR_upper <- exp(summary_table$Estimate + 1.96*summary_table$`Std. Error`)
+#
+# kable(summary_table[, c("OR", "OR_lower", "OR_upper", "Pr(>|z|)")],
+#       col.names = c("OR", "IC 95% inf", "IC 95% sup", "p-value"),
+#       digits = 3) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+---
+
+# Visualisations
+
+## Graphiques descriptifs
+
+### Distribution de l'âge
+```{r age-plot}
+# Histogramme de l'âge
+# ggplot(data, aes(x = age)) +
+#   geom_histogram(binwidth = 5, fill = "#667eea", color = "white", alpha = 0.7) +
+#   labs(title = "Distribution de l'âge",
+#        x = "Âge (années)",
+#        y = "Fréquence") +
+#   theme_minimal()
+```
+
+### Répartition par groupe de traitement
+```{r treatment-plot}
+# Barplot des groupes
+# ggplot(data, aes(x = groupe_traitement, fill = groupe_traitement)) +
+#   geom_bar(alpha = 0.7) +
+#   labs(title = "Répartition par groupe de traitement",
+#        x = "Groupe de traitement",
+#        y = "Nombre de participants") +
+#   theme_minimal() +
+#   theme(legend.position = "none")
+```
+
+## Analyses graphiques
+
+### Relation âge-IMC
+```{r age-bmi-plot}
+# Scatter plot âge vs IMC
+# ggplot(data, aes(x = age, y = imc, color = groupe_traitement)) +
+#   geom_point(alpha = 0.6) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   labs(title = "Relation âge-indice de masse corporelle",
+#        x = "Âge (années)",
+#        y = "IMC (kg/m²)",
+#        color = "Groupe") +
+#   theme_minimal()
+```
+
+### Évolution des paramètres biologiques
+```{r biomarker-plot}
+# Boxplot des biomarqueurs
+# ggplot(data, aes(x = groupe_traitement, y = hemoglobine_a1c, fill = groupe_traitement)) +
+#   geom_boxplot(alpha = 0.7) +
+#   labs(title = "HbA1c par groupe de traitement",
+#        x = "Groupe de traitement",
+#        y = "HbA1c (%)") +
+#   theme_minimal() +
+#   theme(legend.position = "none")
+```
+
+---
+
+# Discussion
+
+## Interprétation des résultats
+[Interprétation des résultats principaux à la lumière de la littérature]
+
+## Forces de l'étude
+1. [Force 1]
+2. [Force 2]
+3. [Force 3]
+
+## Limites de l'étude
+1. [Limite 1]
+2. [Limite 2]
+3. [Limite 3]
+
+## Implications
+### Implications cliniques
+[Comment les résultats peuvent influencer la pratique clinique]
+
+### Implications pour la recherche
+[Questions de recherche futures suggérées]
+
+---
+
+# Conclusions
+
+[Résumé des conclusions principales en 3-5 phrases]
+
+---
+
+# Références
+1. [Référence 1]
+2. [Référence 2]
+3. [Référence 3]
+
+---
+
+# Annexes
+
+## Annexe 1: Code R utilisé
+```{r code-appendix, echo=TRUE, eval=FALSE}
+# Code R complet utilisé pour l'analyse
+# [Insérer le code principal ici]
+```
+
+## Annexe 2: Tableaux détaillés
+```{r detailed-tables}
+# Tableaux supplémentaires si nécessaire
+```
+
+---
+
+**Rapport généré le:** `r format(Sys.Date(), '%d/%m/%Y')`  
+**Auteur:** [Votre nom]  
+**Institution:** [Votre institution]  
+**Version du rapport:** 1.0

@@ -1,0 +1,127 @@
+# =====================================================
+# GITIGNORE - ÉPIDÉMIOLOGIE CLINIQUE
+# GITIGNORE - CLINICAL EPIDEMIOLOGY
+# =====================================================
+
+# Fichiers R temporaires / R temporary files
+*.Rhistory
+*.RData
+*.Rproj.user/
+.Rproj.user
+.Rhistory
+.RData
+
+# Fichiers Python temporaires / Python temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environnements virtuels / Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Fichiers de données sensibles / Sensitive data files
+data/raw/*_sensitive.csv
+data/raw/*_confidential.csv
+data/personal/
+data/protected/
+
+# Résultats temporaires / Temporary results
+results/temp/
+results/cache/
+*.tmp
+*.temp
+
+# Logs et fichiers de debug / Logs and debug files
+*.log
+debug.log
+logs/
+
+# Fichiers système / System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Éditeurs de texte / Text editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Packages et dépendances / Packages and dependencies
+node_modules/
+.Rproj.user/
+
+# Fichiers compilés / Compiled files
+*.com
+*.exe
+*.out
+*.app
+
+# Sauvegardes automatiques / Auto-backups
+*~
+*.bak
+*.backup
+*.old
+
+# Fichiers de configuration locaux / Local config files
+config.local.R
+config.local.py
+.local/
+
+# Données générées / Generated data
+data/generated/
+results/generated/
+
+# Cache de packages / Package cache
+.Rcache/
+.cache/
+
+# Fichiers de session / Session files
+.Rsession
+.session/
+
+# =====================================================
+# FICHIERS À CONSERVER / FILES TO KEEP
+# =====================================================
+#
+# Les fichiers suivants DOIVENT être versionnés:
+# The following files MUST be versioned:
+#
+# ✅ Scripts d'analyse (R/, Python)
+# ✅ Templates et modèles
+# ✅ Documentation (.md, .Rmd)
+# ✅ Configuration de base (config.R)
+# ✅ Structure du projet (README.md)
+# ✅ Données d'exemple anonymisées
+# ✅ Fichiers de métadonnées
+#
+# =====================================================

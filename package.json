@@ -1,0 +1,36 @@
+{
+  "name": "clinical-epidemiology-research",
+  "version": "1.0.0",
+  "description": "Guide complet de recherche en épidémiologie clinique avec ressources pratiques",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "docs": "echo 'Ouvrez index.html dans votre navigateur'",
+    "test": "echo 'Aucun test défini - utilisez les scripts R/Python pour validation'"
+  },
+  "keywords": [
+    "epidemiology",
+    "clinical-research",
+    "statistics",
+    "r-language",
+    "python",
+    "data-analysis"
+  ],
+  "author": "Dr-Aissa",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dr-Aissa/clinical_Epidemiology_research.git"
+  },
+  "homepage": "https://github.com/Dr-Aissa/clinical_Epidemiology_research",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ]
+}
